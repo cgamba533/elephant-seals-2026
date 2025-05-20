@@ -27,7 +27,7 @@ def input_folder():
             print(f"|- {sub}")
     
     print()
-    folder_name = input('Enter the name of an existing folder from the mounted directory (or type "exit" to quit): ').strip()
+    folder_name = input('Enter the name of an existing folder from the mounted directory (or type "exit" to quit). Every image should be from the same beach: ').strip()
     if folder_name.lower() == "exit":
         return None  # Signal to exit
 
@@ -142,6 +142,15 @@ def get_heuristics(dct):
 
 def main(): 
 
+    # Beach: (model version, seal conf, clump conf, overlap, two-prong threshold)
+    hyperparam_dct = {'AL': (14, 20, 40, 20, 10), 
+                      'LS': (14, 20, 40, 20, 10),
+                      'LN': (16, 42, 74, 18, np.inf), 
+                      'DC': (16, 14, 58, 42, np.inf)
+                      }
+    
+    print('Welcome to Elephant Beach CLI! Please follow the prompts.')
+
     # Obtain Roboflow API key: environment variable or prompt with default
     default_api_key = "132cxQxyrOVmPD63wJrV"
     api_key = os.environ.get("ROBOFLOW_API_KEY")
@@ -151,9 +160,6 @@ def main():
         if not api_key:
             raise ValueError("No Roboflow API key provided.")
         print("Using Roboflow API key:", "default" if not user_input else "user-provided")
-    rf = Roboflow(api_key=api_key)
-    project = rf.workspace().project('elephant-seals-project-mark-1')
-    model = project.version('16').model
 
     while True:
         path_to_beach_imgs = input_folder()
@@ -161,12 +167,24 @@ def main():
             print("Exiting the program.")
             break
 
+        beach_input = input('Enter Beach (Options: AL, LS, LN, DC): ')
+        if beach_input not in {'AL', 'LS', 'LN', 'DC'}:
+            print('Unknown beach, not implemented yet.')
+            break     
+
+        rf = Roboflow(api_key=api_key)
+        project = rf.workspace().project('elephant-seals-project-mark-1')
+        model = project.version(str(hyperparam_dct[beach_input][0])).model
+
         beach_imgs_paths = [os.path.join(path_to_beach_imgs, file) for file in os.listdir(path_to_beach_imgs)]
 
         # our preset values of min confidence and overlap, based on vibes
-        clumps, indivs = get_indivs_and_clumps(model, beach_imgs_paths, seal_conf_lvl = 20, clump_conf_lvl = 40, overlap = 20) 
+        clumps, indivs = get_indivs_and_clumps(model, beach_imgs_paths, 
+                                               seal_conf_lvl = hyperparam_dct[beach_input][1], 
+                                               clump_conf_lvl = hyperparam_dct[beach_input][2], 
+                                               overlap = hyperparam_dct[beach_input][3]) 
 
-        clumps = {key: value for key, value in clumps.items() if len(value) >= 10}
+        clumps = {key: value for key, value in clumps.items() if len(value) >= hyperparam_dct[beach_input][4]}
 
         if len(clumps) != 0:
 

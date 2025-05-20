@@ -136,7 +136,7 @@ def fine_tune(model, clump_model, beach_dct, seal_conf, clump_conf, overlap_lst)
                     
                     # iterating across dicts, with confidence as key 
                     valid_clump_imgs = [clump_img for conf, clump_img in clumps_img_dct.items() if conf >= c / 100]
-                    valid_clump_pos = [clump_pos for conf, clump_pos in clumps_pos_dct.items() if conf >= c / 100]
+                    valid_clump_pos  = [clump_pos for conf, clump_pos in clumps_pos_dct.items() if conf >= c / 100]
 
                     # iterating through possible seal conf params 
                     for s in seal_conf: 
