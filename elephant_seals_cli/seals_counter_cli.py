@@ -1,3 +1,4 @@
+
 from roboflow import Roboflow
 from PIL import Image
 from joblib import load 
@@ -143,6 +144,12 @@ def get_heuristics(dct):
 def main(): 
 
     # Beach: (model version, seal conf, clump conf, overlap, two-prong threshold)
+
+    # Seal Conf converts value to decimal: 20 -> 0.2 used for confidence threshold
+    # Clump conf corresponds to 'filtered seals' and refers to confidence level required for model to identify a clump
+    # Overlap is amount of overlap two boxes can have
+    # Two-prong threshold specifies number of clumps that need to be identified 
+
     hyperparam_dct = {'AL': (14, 20, 40, 20, 10), 
                       'LS': (14, 20, 40, 20, 10),
                       'LN': (16, 42, 74, 18, np.inf), 
