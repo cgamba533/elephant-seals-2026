@@ -70,8 +70,9 @@ def convert_tif_to_jpg(input_dir, output_dir=None, quality=100):
 
 if __name__ == "__main__":
     # Your directory path
-    directory = r"C:\Users\conno\Downloads\Classified"
+    directory = "/Users/danielalvarezmorales/Documents/WINTER 2026/DATA 451/Classified 2"
 
-    output_directory = r"C:\Users\conno\Downloads\Classified_Converted"
+    output_directory = "/Users/danielalvarezmorales/Documents/WINTER 2026/DATA 451/Classified2_Converted"
+
 
     convert_tif_to_jpg(directory, output_directory, quality=100)
