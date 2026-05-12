@@ -4,3 +4,8 @@ build/
 dist/
 elephant_seals_counter.egg-info/
 __pycache__/
+data/
+models/
+*.pth
+*.ckpt
+.ipynb_checkpoints/
